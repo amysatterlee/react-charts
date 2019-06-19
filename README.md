@@ -1,3 +1,6 @@
+This is a React app in docker; fork and run docker-compose up; navigate to localhost:3000 and you should be greeted with Hello React Docker!
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
