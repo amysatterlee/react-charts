@@ -24,7 +24,7 @@ class LineChart extends React.Component {
     this.scaleY = null;
     this.yAxis = null;
     this.svg = null;
-    this.margins = {bottom: 25, top: 10, left: 35, right: 15};
+    this.margins = {bottom: 35, top: 10, left: 35, right: 15};
     this.line = null;
   }
 
@@ -52,7 +52,7 @@ class LineChart extends React.Component {
     this.xAxis = axisBottom().scale(this.scaleX).ticks(xData.length).tickFormat(formatTime(this.props.displayTimeFormat));
     this.svg.append('g')
       .attr('transform', `translate(0, ${this.props.height - this.margins.bottom})`)
-      .call(this.xAxis).selectAll("text").attr("transform", "rotate(-40)").attr("dy", "0.35em").attr("dx", "-0.8em");
+      .call(this.xAxis).selectAll("text").attr("transform", "rotate(-40)").attr("dy", "0.7em").attr("dx", "-0.8em");
     this.scaleY.domain([0, getMax(yData)]);
     this.yAxis = axisLeft().scale(this.scaleY);
     this.svg.append('g')

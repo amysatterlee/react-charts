@@ -56,7 +56,7 @@ const App = (props) => {
             width={600} height={400}
             data={data} color='gold'
             inputTimeFormat="%Y-%m-%d"
-            displayTimeFormat="%m/%d"
+            displayTimeFormat="%b %d"
           />
         }
       </ChartModal>
