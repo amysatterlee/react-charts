@@ -47,7 +47,7 @@ class LineChart extends React.Component {
   updateAxes() {
     const parser = parseTime(this.props.inputTimeFormat);
     const xData = this.props.data.map(item => parser(item.key));
-    const yData = this.props.data.map(item => item.val);
+    const yData = this.props.data.map(item => item.value);
     this.scaleX.domain([getMin(xData), getMax(xData)]);
     this.xAxis = axisBottom().scale(this.scaleX).ticks(xData.length).tickFormat(formatTime(this.props.displayTimeFormat));
     this.svg.append('g')
@@ -63,7 +63,7 @@ class LineChart extends React.Component {
   drawLine() {
     const parser = parseTime(this.props.inputTimeFormat);
     let yFunc = (d) => {
-      let val = this.scaleY(d.val);
+      let val = this.scaleY(d.value);
       return val;
     };
     let xFunc = (d) => {
