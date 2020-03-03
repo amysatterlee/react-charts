@@ -1,32 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import '../stylesheets/charts.css';
 import { select } from 'd3-selection';
 import { scaleTime, scaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { timeParse, timeFormat } from 'd3-time-format';
 import { line } from 'd3-shape';
+import { getMax, getMin } from '../helpers/chartHelpers';
 
-const parseTime = timeParse("%Y-%m-%d");
-const formatTime = timeFormat("%Y-%m-%d");
-
-const getMax = (arr) => {
-  let max = arr[0];
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] > max) {
-      max = arr[i];
-    }
-  }
-  return max;
+const parseTime = (val) => {
+  return timeParse(val);
 }
 
-const getMin = (arr) => {
-  let min = arr[0];
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] < min) {
-      min = arr[i];
-    }
-  }
-  return min;
+const formatTime = (val) => {
+  return timeFormat(val);
 }
 
 class LineChart extends React.Component {
@@ -52,18 +39,20 @@ class LineChart extends React.Component {
       this.props.height - this.margins.bottom,
       this.margins.top
     ]);
-    console.log('component mounted');
     if (this.props.data) {
       this.updateChart();
     }
   }
 
-  updateAxes(xData, yData) {
+  updateAxes() {
+    const parser = parseTime(this.props.inputTimeFormat);
+    const xData = this.props.data.map(item => parser(item.key));
+    const yData = this.props.data.map(item => item.val);
     this.scaleX.domain([getMin(xData), getMax(xData)]);
-    this.xAxis = axisBottom().scale(this.scaleX).ticks(xData.length).tickFormat(timeFormat("%m-%d"));
+    this.xAxis = axisBottom().scale(this.scaleX).ticks(xData.length).tickFormat(formatTime(this.props.displayTimeFormat));
     this.svg.append('g')
       .attr('transform', `translate(0, ${this.props.height - this.margins.bottom})`)
-      .call(this.xAxis);
+      .call(this.xAxis).selectAll("text").attr("transform", "rotate(-40)").attr("dy", "0.35em").attr("dx", "-0.8em");
     this.scaleY.domain([0, getMax(yData)]);
     this.yAxis = axisLeft().scale(this.scaleY);
     this.svg.append('g')
@@ -71,31 +60,25 @@ class LineChart extends React.Component {
       .call(this.yAxis);
   }
 
-  drawLine(xData) {
-    let xFunc = (d) => {
-      let val = this.scaleX(d);
+  drawLine() {
+    const parser = parseTime(this.props.inputTimeFormat);
+    let yFunc = (d) => {
+      let val = this.scaleY(d.val);
       return val;
     };
-    let yFunc = (d) => {
-      console.log(d);
-      let val = this.scaleY(this.props.data[formatTime(d)]);
-      console.log(val);
+    let xFunc = (d) => {
+      let val = this.scaleX(parser(d.key));
       return val;
     }
-    this.line = line().x(d  => xFunc(d)).y(d => yFunc(d));
-    let path = this.svg.append('path').data([xData]);
+    this.line = line().x(d => xFunc(d)).y(d => yFunc(d));
+    let path = this.svg.append('path').data([this.props.data]);
     path.attr('class', 'line').attr('d', this.line).attr('fill', 'none');
     path.attr('stroke', this.props.color);
   }
 
   updateChart() {
-    console.log('updating chart');
-    const xData = Object.keys(this.props.data).map(item => parseTime(item));
-    console.log(xData);
-    const yData = Object.keys(this.props.data).map(key => this.props.data[key]);
-    console.log(yData);
-    this.updateAxes(xData, yData);
-    this.drawLine(xData);
+    this.updateAxes();
+    this.drawLine();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -110,5 +93,15 @@ class LineChart extends React.Component {
     );
   };
 }
+
+LineChart.propTypes = {
+  chartId: PropTypes.string,
+  data: PropTypes.array,
+  color: PropTypes.string,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  inputTimeFormat: PropTypes.string,
+  displayTimeFormat: PropTypes.string
+};
 
 export default LineChart;

@@ -19,6 +19,7 @@ const ChartModal = ({
         </div>
         <div className='card-body'>
           {children}
+          <br></br>
           <button
             className='btn btn-sm btn-outline-primary float-right'
             onClick={handleClose}

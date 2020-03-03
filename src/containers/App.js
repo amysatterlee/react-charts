@@ -8,14 +8,14 @@ const App = (props) => {
   const [showModal, setShowModal] = useState(false);
   const [type, setType] = useState('bar');
 
-  const [data, setData] = useState({
-    '2020-02-02': 20,
-    '2020-02-03': 25,
-    '2020-02-04': 33,
-    '2020-02-05': 27,
-    '2020-02-06': 23
-  });
-  const colors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
+  const [data, setData] = useState([
+    {key: '2020-02-02', val: 20},
+    {key: '2020-02-03', val: 27},
+    {key: '2020-02-04', val: 23},
+    {key: '2020-02-05', val: 18},
+    {key: '2020-02-06', val: 25},
+    {key: '2020-02-07', val: 29}
+  ]);
 
   const handleClick = (typ) => {
     setType(typ);
@@ -55,6 +55,8 @@ const App = (props) => {
           <LineChart chartId='myLineChart'
             width={600} height={400}
             data={data} color='gold'
+            inputTimeFormat="%Y-%m-%d"
+            displayTimeFormat="%m/%d"
           />
         }
       </ChartModal>

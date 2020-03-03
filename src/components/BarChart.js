@@ -1,18 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import '../stylesheets/charts.css';
 import { select } from 'd3-selection';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
-
-const getMax = (arr) => {
-  let max = arr[0];
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] > max) {
-      max = arr[i];
-    }
-  }
-  return max;
-}
+import { getMax } from '../helpers/chartHelpers';
 
 class BarChart extends React.Component {
 
@@ -37,39 +29,39 @@ class BarChart extends React.Component {
       this.props.height - this.margins.bottom,
       this.margins.top
     ]);
+    if (this.props.data && this.props.data.length > 0) {
+      this.updateChart();
+    }
   }
 
-  updateAxes(xData, yData) {
-    this.scaleX.domain(xData);
+  updateAxes() {
+    this.scaleX.domain(this.props.data.map(item => item.key));
     this.xAxis = axisBottom().scale(this.scaleX);
     this.svg.append('g')
       .attr('transform', `translate(0, ${this.props.height - this.margins.bottom})`)
       .call(this.xAxis);
-    this.scaleY.domain([0, getMax(yData)]);
+    this.scaleY.domain([0, getMax(this.props.data.map(item => item.val))]);
     this.yAxis = axisLeft().scale(this.scaleY);
     this.svg.append('g')
       .attr('transform', `translate(${this.margins.left}, 0)`)
       .call(this.yAxis);
   }
 
-  updateData(xData) {
+  updateData() {
     this.svg.append('g')
       .selectAll('rect')
-      .data(xData)
+      .data(this.props.data)
       .join('rect')
-        .attr('x', d => this.scaleX(d))
-        .attr('y', d => this.scaleY(this.props.data[d]))
+        .attr('x', d => this.scaleX(d.key))
+        .attr('y', d => this.scaleY(d.val))
         .attr('width', this.scaleX.bandwidth())
-        .attr('height', d => this.scaleY(0) - this.scaleY(this.props.data[d]))
+        .attr('height', d => this.scaleY(0) - this.scaleY(d.val))
         .attr('fill', this.props.color);
   }
 
   updateChart() {
-    console.log('updating chart');
-    const xData = Object.keys(this.props.data);
-    const yData = xData.map(key => this.props.data[key]);
-    this.updateAxes(xData, yData);
-    this.updateData(xData);
+    this.updateAxes();
+    this.updateData();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -84,5 +76,13 @@ class BarChart extends React.Component {
     );
   };
 }
+
+BarChart.propTypes = {
+  chartId: PropTypes.string,
+  data: PropTypes.array,
+  color: PropTypes.string,
+  width: PropTypes.number,
+  height: PropTypes.number
+};
 
 export default BarChart;
