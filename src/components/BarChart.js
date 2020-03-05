@@ -8,26 +8,19 @@ import { getMax } from '../helpers/chartHelpers';
 
 class BarChart extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.xAxis = null;
-    this.scaleY = null;
-    this.yAxis = null;
-    this.svg = null;
-    this.margins = {bottom: 25, top: 10, left: 35, right: 10};
-  }
-
   componentDidMount() {
     this.svg = select(`#${this.props.chartId}`)
       .attr('width', this.props.width)
       .attr('height', this.props.height);
     this.scaleX = scaleBand();
-    this.scaleX.range([this.margins.left, this.props.width - this.margins.right])
-      .padding(0.2);
+    this.scaleX.range([
+      this.props.margins.left,
+      this.props.width - this.props.margins.right
+    ]).padding(0.2);
     this.scaleY = scaleLinear();
     this.scaleY.range([
-      this.props.height - this.margins.bottom,
-      this.margins.top
+      this.props.height - this.props.margins.bottom,
+      this.props.margins.top
     ]);
     if (this.props.data && this.props.data.length > 0) {
       this.updateChart();
@@ -38,12 +31,12 @@ class BarChart extends React.Component {
     this.scaleX.domain(this.props.data.map(item => item.key));
     this.xAxis = axisBottom().scale(this.scaleX);
     this.svg.append('g')
-      .attr('transform', `translate(0, ${this.props.height - this.margins.bottom})`)
+      .attr('transform', `translate(0, ${this.props.height - this.props.margins.bottom})`)
       .call(this.xAxis);
     this.scaleY.domain([0, getMax(this.props.data.map(item => item.value))]);
     this.yAxis = axisLeft().scale(this.scaleY);
     this.svg.append('g')
-      .attr('transform', `translate(${this.margins.left}, 0)`)
+      .attr('transform', `translate(${this.props.margins.left}, 0)`)
       .call(this.yAxis);
   }
 
@@ -82,7 +75,21 @@ BarChart.propTypes = {
   data: PropTypes.array,
   color: PropTypes.string,
   width: PropTypes.number,
-  height: PropTypes.number
+  height: PropTypes.number,
+  margins: PropTypes.object
+};
+
+BarChart.defaultProps = {
+  chartId: 'defaultBarChartId',
+  color: 'steelblue',
+  width: 600,
+  height: 400,
+  margins: {
+    bottom: 25,
+    top: 10,
+    left: 35,
+    right: 10
+  }
 };
 
 export default BarChart;

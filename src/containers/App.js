@@ -15,7 +15,9 @@ const App = (props) => {
     {key: '2020-02-04', value: 23},
     {key: '2020-02-05', value: 18},
     {key: '2020-02-06', value: 25},
-    {key: '2020-02-07', value: 29}
+    {key: '2020-02-07', value: 29},
+    {key: '2020-02-08', value: 10},
+    {key: '2020-02-09', value: 17}
   ]);
 
   const [dataB, setDataB] = useState([
@@ -24,7 +26,9 @@ const App = (props) => {
     {key: '2020-02-04', values: {key_a: 13, key_b: 18, key_c: 9}},
     {key: '2020-02-05', values: {key_a: 7, key_b: 20, key_c: 2}},
     {key: '2020-02-06', values: {key_a: 9, key_b: 14, key_c: 4}},
-    {key: '2020-02-07', values: {key_a: 13, key_b: 16, key_c: 17}}
+    {key: '2020-02-07', values: {key_a: 4, key_b: 9, key_c: 6}},
+    {key: '2020-02-08', values: {key_a: 9, key_b: 6, key_c: 14}},
+    {key: '2020-02-09', values: {key_a: 13, key_b: 8, key_c: 8}}
   ]);
 
   const dataBKeys = {
